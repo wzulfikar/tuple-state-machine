@@ -1,6 +1,6 @@
 {
   "name": "tuple-state-machine",
-  "version": "1.6.0",
+  "version": "0.0.1",
   "description": "Create state machine in TypeScript using tuples",
   "main": "./dist/state-machine.js",
   "typings": "./dist/state-machine.d.ts",
