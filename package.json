@@ -2,14 +2,20 @@
   "name": "tuple-state-machine",
   "version": "0.0.1",
   "description": "Create state machine in TypeScript using tuples",
-  "main": "./dist/state-machine.js",
-  "typings": "./dist/state-machine.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "exports": {
+    "import": "./dist/index.esm.js",
+    "require": "./dist/index.js"
+  },
+  "sideEffects": false,
+  "typings": "./dist/index.d.ts",
   "keywords": [
     "fsm",
     "state-machine",
-    "promise",
     "typescript",
-    "generics"
+    "generics",
+    "tuple"
   ],
   "repository": {
     "type": "git",
@@ -18,14 +24,17 @@
   "engine": {
     "node": ">=20"
   },
-  "author": "hey@wzulfikar.com",
+  "author": "wzulfikar <hey@wzulfikar.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/wzulfikar/tuple-state-machine/issues"
   },
   "homepage": "https://github.com/wzulfikar/tuple-state-machine#readme",
   "scripts": {
-    "build": "npm run lint && tsc --pretty",
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc --pretty",
+    "build:esm": "tsc --pretty --module ES2020 --outDir ./dist/esm && npm run create-esm-entry",
+    "create-esm-entry": "node scripts/create-esm-entry.js",
     "test": "eslint --color src/**/*.ts && node --test",
     "clean": "rimraf coverage *.log logs dist coverage",
     "lint": "eslint --color --fix src/**/*.ts && echo Lint complete.",
