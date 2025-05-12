@@ -5,7 +5,15 @@
 /.vscode
 .travis.yml
 /dist/__test__
+/.work
+/.git
+/.github
 
 *.env
 *.config.js
 *.log
+.DS_Store
+.eslintrc.json
+bun.lock
+jest.config.js
+tsconfig.json

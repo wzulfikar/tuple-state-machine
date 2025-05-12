@@ -1,4 +1,4 @@
-# TypeScript State Machine (ts-state-machine)
+# TypeScript State Machine (tuple-state-machine)
 
 ```ts
 const machine1 = createStateMachine([
