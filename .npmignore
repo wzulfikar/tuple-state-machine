@@ -1,0 +1,11 @@
+/node_modules
+/config
+/coverage
+/src
+/.vscode
+.travis.yml
+/dist/__test__
+
+*.env
+*.config.js
+*.log

@@ -1,7 +1,7 @@
-# TypeScript State Machine (tiny-state-machine)
+# TypeScript State Machine (ts-state-machine)
 
-[![Build Status](https://app.travis-ci.com/wzulfikar/tiny-state-machine.svg?branch=master)](https://app.travis-ci.com/github/wzulfikar/tiny-state-machine)
-[![npm package](https://img.shields.io/npm/v/tiny-state-machine.svg?logo=nodedotjs&color=00a400)](https://www.npmjs.com/package/tiny-state-machine)
+[![Build Status](https://app.travis-ci.com/wzulfikar/ts-state-machine.svg?branch=master)](https://app.travis-ci.com/github/wzulfikar/ts-state-machine)
+[![npm package](https://img.shields.io/npm/v/ts-state-machine.svg?logo=nodedotjs&color=00a400)](https://www.npmjs.com/package/ts-state-machine)
 <img src="https://img.shields.io/badge/winter-is%20coming-5593c8" alt="It's already here!" height="20"/>
 
 Finite state machines are useful for modeling complicated flows and keeping track of state. TS-FSM is a strongly typed finite state machine for TypeScript that is using promises for async operations.
@@ -19,8 +19,8 @@ Finite state machines are useful for modeling complicated flows and keeping trac
 ## Get it
 
   ```script
-  git clone https://github.com/wzulfikar/tiny-state-machine.git
-  cd tiny-state-machine
+  git clone https://github.com/wzulfikar/ts-state-machine.git
+  cd ts-state-machine
   npm install
   npm test
   ```
@@ -28,7 +28,7 @@ Finite state machines are useful for modeling complicated flows and keeping trac
 ## Use it
 
   ```script
-  npm install tiny-state-machine
+  npm install ts-state-machine
  ```
 
 ## Basic Example
@@ -40,7 +40,7 @@ I'm modeling a "door" here. One can open the door, close it or break it. Each ac
 Let's code it in Typescript! Note that the same code can be run in Javascript, just remove the generics.
 
 ```typescript
-import { t, StateMachine } from "tiny-state-machine";
+import { t, StateMachine } from "ts-state-machine";
 
 // these are the states and events for the door
 enum States { closing = 0, closed, opening, opened, broken };
@@ -113,9 +113,9 @@ new Promise(async (resolve) => {
 
 ## Another example
 
-Check out [the test code](https://github.com/wzulfikar/tiny-state-machine/blob/master/src/__test__/state-machine.test.ts) - a class that implements a state machine with method binding, method params and more transitions. 100% coverage here!
+Check out [the test code](https://github.com/wzulfikar/ts-state-machine/blob/master/src/__test__/state-machine.test.ts) - a class that implements a state machine with method binding, method params and more transitions. 100% coverage here!
 
 ## Beautiful :-)
 
-Comments and suggestions are [welcome](https://github.com/wzulfikar/tiny-state-machine/issues/new).
+Comments and suggestions are [welcome](https://github.com/wzulfikar/ts-state-machine/issues/new).
 # ts-state-machine
