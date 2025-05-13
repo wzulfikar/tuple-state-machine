@@ -1,18 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createStateMachine } from 'tuple-state-machine';
 
 // Traffic light state machine
 // States: red -> green -> yellow -> red
-const trafficLightTransitions = [
+const trafficLight = createStateMachine([
   ['red', 'change', 'green'],
   ['green', 'change', 'yellow'],
   ['yellow', 'change', 'red'],
-] as const;
+]);
 
 const FSMDemo: React.FC = () => {
-  const [stateMachine, setStateMachine] = useState(() => 
-    createStateMachine(trafficLightTransitions, 'red')
-  );
+  const [, setState] = useState(trafficLight.state);
+  useEffect(() => {
+    trafficLight.onChange = setState;
+  }, []);
   
   const [history, setHistory] = useState<string[]>(['Started at: red']);
 
@@ -28,12 +29,11 @@ const FSMDemo: React.FC = () => {
   };
   
   const handleChange = async () => {
-    if (stateMachine.can('change')) {
-      const previousState = stateMachine.state;
-      const result = await stateMachine.event('change');
+    if (trafficLight.can('change')) {
+      const previousState = trafficLight.state;
+      const result = await trafficLight.event('change');
       
       if (!result.error) {
-        setStateMachine({ ...stateMachine }); // Force re-render with updated state
         setHistory(prev => [...prev, `${previousState} → ${result.state}`]);
       } else {
         setHistory(prev => [...prev, `Error: ${result.error}`]);
@@ -50,24 +50,24 @@ const FSMDemo: React.FC = () => {
           style={{ 
             ...lightStyle, 
             backgroundColor: 'red',
-            opacity: stateMachine.state === 'red' ? 1 : 0.3,
-            boxShadow: stateMachine.state === 'red' ? '0 0 20px red' : 'none'
+            opacity: trafficLight.state === 'red' ? 1 : 0.3,
+            boxShadow: trafficLight.state === 'red' ? '0 0 20px red' : 'none'
           }} 
         />
         <div 
           style={{ 
             ...lightStyle, 
             backgroundColor: 'green',
-            opacity: stateMachine.state === 'green' ? 1 : 0.3,
-            boxShadow: stateMachine.state === 'green' ? '0 0 20px green' : 'none'
+            opacity: trafficLight.state === 'green' ? 1 : 0.3,
+            boxShadow: trafficLight.state === 'green' ? '0 0 20px green' : 'none'
           }} 
         />
         <div 
           style={{ 
             ...lightStyle, 
             backgroundColor: 'yellow',
-            opacity: stateMachine.state === 'yellow' ? 1 : 0.3,
-            boxShadow: stateMachine.state === 'yellow' ? '0 0 20px yellow' : 'none'
+            opacity: trafficLight.state === 'yellow' ? 1 : 0.3,
+            boxShadow: trafficLight.state === 'yellow' ? '0 0 20px yellow' : 'none'
           }} 
         />
       </div>
@@ -91,9 +91,9 @@ const FSMDemo: React.FC = () => {
       </div>
       
       <div style={{ marginTop: '30px', textAlign: 'left', maxWidth: '400px', margin: '30px auto' }}>
-        <h3>Current State: {stateMachine.state}</h3>
+        <h3>Current State: {trafficLight.state}</h3>
         <h3>State History:</h3>
-        <ul style={{ maxHeight: '200px', overflowY: 'auto', padding: '10px', background: '#f5f5f5', borderRadius: '4px' }}>
+        <ul style={{ maxHeight: '200px', overflowY: 'auto', padding: '10px', background: '#f5f5f5', borderRadius: '4px', color: 'black' }}>
           {history.map((entry, i) => (
             <li key={`history-entry-${i}`}>{entry}</li>
           ))}
@@ -103,10 +103,10 @@ const FSMDemo: React.FC = () => {
       <div style={{ marginTop: '30px', textAlign: 'left', maxWidth: '400px', margin: '30px auto' }}>
         <h3>Stats:</h3>
         <ul>
-          <li>All states: {stateMachine.states.join(', ')}</li>
-          <li>Initial states: {stateMachine.initialStates.join(', ')}</li>
-          <li>Final states: {stateMachine.finalStates.join(', ')}</li>
-          <li>Valid events: {stateMachine.events.join(', ')}</li>
+          <li>All states: {trafficLight.states.join(', ')}</li>
+          <li>Initial states: {trafficLight.initialStates.join(', ')}</li>
+          <li>Final states: {trafficLight.finalStates.join(', ')}</li>
+          <li>Valid events: {trafficLight.events.join(', ')}</li>
         </ul>
       </div>
     </div>

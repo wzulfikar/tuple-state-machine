@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 
-type StateTransition<S extends string = string, E extends string = string, C extends ((...args: unknown[]) => (Promise<unknown> | unknown | void)) = (...args: unknown[]) => void> =
+export type StateTransition<S extends string = string, E extends string = string, C extends ((...args: unknown[]) => (Promise<unknown> | unknown | void)) = (...args: unknown[]) => void> =
   // state transition without callback
   | readonly [S, E, S]
   // state transition with callback
@@ -97,7 +97,7 @@ export type EventResult<TState> = {
   data?: unknown | null;
 };
 
-class StateMachine<
+export class StateMachine<
   TStateTransitions extends readonly StateTransition[] = readonly StateTransition[],
   TState extends string = ExtractStates<TStateTransitions> & string,
   TEvent extends string = ExtractEvents<TStateTransitions> & string,
@@ -117,13 +117,15 @@ class StateMachine<
   protected _intermediateStates?: TIntermediateStates[];
   protected _finalStates?: TFinalStates[];
   protected _events?: TEvent[];
-
+  
   state: TState;
   previousState?: TIntermediateStates;
+  onChange?: (state: TState) => void;
 
   constructor(
     readonly stateTransitions: TStateTransitions,
     readonly currentState?: TState,
+    onChange?: (state: TState) => void,
   ) {
     const state = (currentState ?? stateTransitions[0][0]) as unknown as TState;
 
@@ -140,6 +142,7 @@ class StateMachine<
 
     this.params = { stateTransitions, currentState: state };
     this.state = state;
+    this.onChange = onChange;
   }
 
   get states(): TState[] {
@@ -321,13 +324,13 @@ class StateMachine<
                     if (tran.toState) this.state = tran.toState;
                     resolve(p);
                   })
-                  return true;
                 } else {
                   // Callback executed successfully, update state
                   if (tran.toState) this.state = tran.toState;
                   resolve(p as any);
-                  return true;
                 }
+                this.onChange?.(this.state);
+                return true;
               } catch (e) {
                 // Callback threw an error, don't update state
                 reject(`Error when dipatching event: ${e}`);

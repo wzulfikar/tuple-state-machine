@@ -1,31 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createStateMachine } from 'tuple-state-machine';
 
 // Document workflow state machine
 // draft -> review -> approved/rejected -> published (if approved)
-const documentWorkflowTransitions = [
-  ['draft', 'submit', 'review', () => console.log('Document submitted for review')],
-  ['review', 'approve', 'approved', () => console.log('Document approved')],
-  ['review', 'reject', 'rejected', () => console.log('Document rejected')],
+const documentWorkflow = createStateMachine([
+  ['draft', 'submit', 'in_review', () => console.log('Document submitted for review')],
+  ['in_review', 'approve', 'approved', () => console.log('Document approved')],
+  ['in_review', 'reject', 'rejected', () => console.log('Document rejected')],
   ['approved', 'publish', 'published', () => console.log('Document published')],
   ['rejected', 'revise', 'draft', () => console.log('Document back to draft for revision')],
-] as const;
+  ['published', 'reset', 'draft', () => console.log('Document reset to draft')],
+]);
 
-const DocumentWorkflow: React.FC = () => {
-  const [stateMachine, setStateMachine] = useState(() => 
-    createStateMachine(documentWorkflowTransitions, 'draft')
-  );
+const DocumentWorkflow: React.FC = () => {  
+  const [, setState] = useState(documentWorkflow.state);
+  useEffect(() => {
+    documentWorkflow.onChange = setState;
+  }, []);
   
   const [history, setHistory] = useState<string[]>(['Started at: draft']);
   const [comments, setComments] = useState<string>('');
 
-  const handleEvent = async (event: 'submit' | 'approve' | 'reject' | 'publish' | 'revise') => {
-    if (stateMachine.can(event)) {
-      const previousState = stateMachine.state;
-      const result = await stateMachine.event(event, { comments });
+  const handleEvent = async (event: typeof documentWorkflow.events[number]) => {
+    if (documentWorkflow.can(event)) {
+      const previousState = documentWorkflow.state;
+      const result = await documentWorkflow.event(event, { comments });
       
       if (!result.error) {
-        setStateMachine({ ...stateMachine }); // Force re-render with updated state
         setHistory(prev => [...prev, `${previousState} → ${result.state} (${event})`]);
       } else {
         setHistory(prev => [...prev, `Error: ${result.error}`]);
@@ -36,7 +37,7 @@ const DocumentWorkflow: React.FC = () => {
   const getAvailableButtons = () => {
     const buttons = [];
     
-    if (stateMachine.state === 'draft' && stateMachine.can('submit')) {
+    if (documentWorkflow.state === 'draft' && documentWorkflow.can('submit')) {
       buttons.push(
         <button
           key="submit"
@@ -49,8 +50,8 @@ const DocumentWorkflow: React.FC = () => {
       );
     }
     
-    if (stateMachine.state === 'review') {
-      if (stateMachine.can('approve')) {
+    if (documentWorkflow.state === 'in_review') {
+      if (documentWorkflow.can('approve')) {
         buttons.push(
           <button
             key="approve"
@@ -63,7 +64,7 @@ const DocumentWorkflow: React.FC = () => {
         );
       }
       
-      if (stateMachine.can('reject')) {
+      if (documentWorkflow.can('reject')) {
         buttons.push(
           <button
             key="reject"
@@ -76,8 +77,21 @@ const DocumentWorkflow: React.FC = () => {
         );
       }
     }
+
+    if (documentWorkflow.can('reset')) {
+      buttons.push(
+        <button
+          key="reset"
+          type="button"
+          onClick={() => handleEvent('reset')}
+          className="action-btn warning"
+        >
+          Reset
+        </button>
+      );
+    }
     
-    if (stateMachine.state === 'approved' && stateMachine.can('publish')) {
+    if (documentWorkflow.state === 'approved' && documentWorkflow.can('publish')) {
       buttons.push(
         <button
           key="publish"
@@ -90,7 +104,7 @@ const DocumentWorkflow: React.FC = () => {
       );
     }
     
-    if (stateMachine.state === 'rejected' && stateMachine.can('revise')) {
+    if (documentWorkflow.state === 'rejected' && documentWorkflow.can('revise')) {
       buttons.push(
         <button
           key="revise"
@@ -116,7 +130,7 @@ const DocumentWorkflow: React.FC = () => {
         margin: '40px 0',
         position: 'relative'
       }}>
-        {['draft', 'review', 'approved', 'published', 'rejected'].map((state, index) => (
+        {['draft', 'in_review', 'approved', 'published', 'rejected'].map((state) => (
           <div 
             key={state}
             style={{
@@ -124,9 +138,9 @@ const DocumentWorkflow: React.FC = () => {
               padding: '10px',
               textAlign: 'center',
               borderRadius: '8px',
-              backgroundColor: stateMachine.state === state ? '#4CAF50' : '#f0f0f0',
-              color: stateMachine.state === state ? 'white' : '#333',
-              fontWeight: stateMachine.state === state ? 'bold' : 'normal',
+              backgroundColor: documentWorkflow.state === state ? '#4CAF50' : '#f0f0f0',
+              color: documentWorkflow.state === state ? 'white' : '#333',
+              fontWeight: documentWorkflow.state === state ? 'bold' : 'normal',
               position: 'relative',
               zIndex: 10
             }}
@@ -148,7 +162,7 @@ const DocumentWorkflow: React.FC = () => {
       </div>
       
       <div style={{ margin: '20px 0' }}>
-        <h3>Current State: <span style={{ color: '#4CAF50' }}>{stateMachine.state}</span></h3>
+        <h3>Current State: <span style={{ color: '#4CAF50' }}>{documentWorkflow.state}</span></h3>
         
         <div style={{ marginTop: '20px' }}>
           <label htmlFor="comments" style={{ display: 'block', marginBottom: '8px' }}>
@@ -186,7 +200,8 @@ const DocumentWorkflow: React.FC = () => {
           padding: '15px', 
           background: '#f5f5f5', 
           borderRadius: '4px',
-          listStyleType: 'none'
+          listStyleType: 'none',
+          color: '#333'
         }}>
           {history.map((entry, i) => (
             <li 
