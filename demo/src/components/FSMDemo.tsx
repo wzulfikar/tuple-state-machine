@@ -16,17 +16,6 @@ const FSMDemo: React.FC = () => {
   }, []);
   
   const [history, setHistory] = useState<string[]>(['Started at: red']);
-
-  // Style for the traffic lights
-  const lightStyle = {
-    width: '80px',
-    height: '80px',
-    borderRadius: '50%',
-    margin: '10px',
-    display: 'inline-block',
-    opacity: 0.3,
-    transition: 'all 0.3s ease'
-  };
   
   const handleChange = async () => {
     if (trafficLight.can('change')) {
@@ -42,67 +31,62 @@ const FSMDemo: React.FC = () => {
   };
 
   return (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
-      <h2>Traffic Light State Machine</h2>
+    <div className="text-center py-5">
+      <h2 className="text-2xl font-bold mb-6">Traffic Light State Machine</h2>
       
-      <div style={{ margin: '30px 0' }}>
-        <div 
-          style={{ 
-            ...lightStyle, 
-            backgroundColor: 'red',
-            opacity: trafficLight.state === 'red' ? 1 : 0.3,
-            boxShadow: trafficLight.state === 'red' ? '0 0 20px red' : 'none'
-          }} 
-        />
-        <div 
-          style={{ 
-            ...lightStyle, 
-            backgroundColor: 'green',
-            opacity: trafficLight.state === 'green' ? 1 : 0.3,
-            boxShadow: trafficLight.state === 'green' ? '0 0 20px green' : 'none'
-          }} 
-        />
-        <div 
-          style={{ 
-            ...lightStyle, 
-            backgroundColor: 'yellow',
-            opacity: trafficLight.state === 'yellow' ? 1 : 0.3,
-            boxShadow: trafficLight.state === 'yellow' ? '0 0 20px yellow' : 'none'
-          }} 
-        />
+      <div className="my-8 relative flex justify-center">
+        {/* Traffic light cabinet with pole */}
+        <div className="relative">
+          {/* Pole */}
+          <div className="w-8 h-52 bg-gray-800 mx-auto rounded-b"></div>
+          
+          {/* Base */}
+          <div className="w-24 h-5 bg-gray-800 mx-auto rounded-full -mt-1"></div>
+          
+          {/* Traffic Light Housing */}
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-black p-4 rounded-xl flex flex-col gap-4 items-center shadow-lg border-4 border-gray-800">
+            <div 
+              className={`w-20 h-20 rounded-full transition-all duration-300 bg-red-600 ${
+                trafficLight.state === 'red' ? 'opacity-100 shadow-[0_0_20px_red]' : 'opacity-30'
+              }`}
+            />
+            <div 
+              className={`w-20 h-20 rounded-full transition-all duration-300 bg-yellow-500 ${
+                trafficLight.state === 'yellow' ? 'opacity-100 shadow-[0_0_20px_yellow]' : 'opacity-30'
+              }`}
+            />
+            <div 
+              className={`w-20 h-20 rounded-full transition-all duration-300 bg-green-600 ${
+                trafficLight.state === 'green' ? 'opacity-100 shadow-[0_0_20px_green]' : 'opacity-30'
+              }`}
+            />
+          </div>
+        </div>
       </div>
       
-      <div>
+      <div className="mt-16">
         <button 
           onClick={handleChange}
           type="button"
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            background: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
+          className="px-5 py-2.5 text-base bg-green-600 text-white border-none rounded cursor-pointer"
         >
           Change Light
         </button>
       </div>
       
-      <div style={{ marginTop: '30px', textAlign: 'left', maxWidth: '400px', margin: '30px auto' }}>
-        <h3>Current State: {trafficLight.state}</h3>
-        <h3>State History:</h3>
-        <ul style={{ maxHeight: '200px', overflowY: 'auto', padding: '10px', background: '#f5f5f5', borderRadius: '4px', color: 'black' }}>
+      <div className="mt-8 text-left max-w-md mx-auto">
+        <h3 className="text-xl font-semibold">Current State: {trafficLight.state}</h3>
+        <h3 className="text-xl font-semibold mt-4">State History:</h3>
+        <ul className="max-h-[200px] overflow-y-auto p-2.5 bg-gray-100 dark:bg-gray-800 rounded text-black dark:text-white">
           {history.map((entry, i) => (
-            <li key={`history-entry-${i}`}>{entry}</li>
+            <li key={`history-entry-${i}`} className="py-1">{entry}</li>
           ))}
         </ul>
       </div>
       
-      <div style={{ marginTop: '30px', textAlign: 'left', maxWidth: '400px', margin: '30px auto' }}>
-        <h3>Stats:</h3>
-        <ul>
+      <div className="mt-8 text-left max-w-md mx-auto">
+        <h3 className="text-xl font-semibold">Stats:</h3>
+        <ul className="list-disc pl-5">
           <li>All states: {trafficLight.states.join(', ')}</li>
           <li>Initial states: {trafficLight.initialStates.join(', ')}</li>
           <li>Final states: {trafficLight.finalStates.join(', ')}</li>

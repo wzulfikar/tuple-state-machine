@@ -43,7 +43,7 @@ const DocumentWorkflow: React.FC = () => {
           key="submit"
           type="button"
           onClick={() => handleEvent('submit')}
-          className="action-btn primary"
+          className="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:opacity-90 hover:-translate-y-0.5 transition-all"
         >
           Submit for Review
         </button>
@@ -57,7 +57,7 @@ const DocumentWorkflow: React.FC = () => {
             key="approve"
             type="button"
             onClick={() => handleEvent('approve')}
-            className="action-btn success"
+            className="px-4 py-2 bg-green-600 text-white font-bold rounded hover:opacity-90 hover:-translate-y-0.5 transition-all"
           >
             Approve
           </button>
@@ -70,7 +70,7 @@ const DocumentWorkflow: React.FC = () => {
             key="reject"
             type="button"
             onClick={() => handleEvent('reject')}
-            className="action-btn danger"
+            className="px-4 py-2 bg-red-600 text-white font-bold rounded hover:opacity-90 hover:-translate-y-0.5 transition-all"
           >
             Reject
           </button>
@@ -84,7 +84,7 @@ const DocumentWorkflow: React.FC = () => {
           key="reset"
           type="button"
           onClick={() => handleEvent('reset')}
-          className="action-btn warning"
+          className="px-4 py-2 bg-orange-500 text-white font-bold rounded hover:opacity-90 hover:-translate-y-0.5 transition-all"
         >
           Reset
         </button>
@@ -97,7 +97,7 @@ const DocumentWorkflow: React.FC = () => {
           key="publish"
           type="button"
           onClick={() => handleEvent('publish')}
-          className="action-btn success"
+          className="px-4 py-2 bg-green-600 text-white font-bold rounded hover:opacity-90 hover:-translate-y-0.5 transition-all"
         >
           Publish
         </button>
@@ -110,7 +110,7 @@ const DocumentWorkflow: React.FC = () => {
           key="revise"
           type="button"
           onClick={() => handleEvent('revise')}
-          className="action-btn warning"
+          className="px-4 py-2 bg-orange-500 text-white font-bold rounded hover:opacity-90 hover:-translate-y-0.5 transition-all"
         >
           Revise
         </button>
@@ -121,122 +121,62 @@ const DocumentWorkflow: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h2>Document Workflow State Machine</h2>
+    <div className="max-w-2xl mx-auto py-5">
+      <h2 className="text-2xl font-bold mb-6">Document Workflow State Machine</h2>
       
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        margin: '40px 0',
-        position: 'relative'
-      }}>
+      <div className="flex justify-between mb-10 relative">
         {['draft', 'in_review', 'approved', 'published', 'rejected'].map((state) => (
           <div 
             key={state}
-            style={{
-              width: '80px',
-              padding: '10px',
-              textAlign: 'center',
-              borderRadius: '8px',
-              backgroundColor: documentWorkflow.state === state ? '#4CAF50' : '#f0f0f0',
-              color: documentWorkflow.state === state ? 'white' : '#333',
-              fontWeight: documentWorkflow.state === state ? 'bold' : 'normal',
-              position: 'relative',
-              zIndex: 10
-            }}
+            className={`w-20 py-2 px-3 text-center rounded-lg ${
+              documentWorkflow.state === state 
+                ? 'bg-green-600 text-white font-bold' 
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+            } z-10`}
           >
             {state}
           </div>
         ))}
         
         {/* Progress line */}
-        <div style={{
-          position: 'absolute',
-          height: '4px',
-          backgroundColor: '#ddd',
-          top: '50%',
-          left: '40px',
-          right: '40px',
-          zIndex: 5
-        }} />
+        <div className="absolute h-1 bg-gray-300 dark:bg-gray-600 top-1/2 left-10 right-10 -translate-y-1/2 z-0" />
       </div>
       
-      <div style={{ margin: '20px 0' }}>
-        <h3>Current State: <span style={{ color: '#4CAF50' }}>{documentWorkflow.state}</span></h3>
+      <div className="mb-5">
+        <h3 className="text-xl font-semibold">Current State: <span className="text-green-600">{documentWorkflow.state}</span></h3>
         
-        <div style={{ marginTop: '20px' }}>
-          <label htmlFor="comments" style={{ display: 'block', marginBottom: '8px' }}>
+        <div className="mt-5">
+          <label htmlFor="comments" className="block mb-2 font-medium">
             Comments:
           </label>
           <textarea
             id="comments"
             value={comments}
             onChange={(e) => setComments(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ddd',
-              minHeight: '80px'
-            }}
+            className="w-full p-2 rounded border border-gray-300 dark:border-gray-600 min-h-[80px] bg-white dark:bg-gray-800"
           />
         </div>
         
-        <div style={{ 
-          display: 'flex', 
-          gap: '10px', 
-          marginTop: '20px',
-          flexWrap: 'wrap'
-        }}>
+        <div className="flex flex-wrap gap-2.5 mt-5">
           {getAvailableButtons()}
         </div>
       </div>
       
-      <div style={{ marginTop: '30px' }}>
-        <h3>State History:</h3>
-        <ul style={{ 
-          maxHeight: '200px', 
-          overflowY: 'auto', 
-          padding: '15px', 
-          background: '#f5f5f5', 
-          borderRadius: '4px',
-          listStyleType: 'none',
-          color: '#333'
-        }}>
+      <div className="mt-8">
+        <h3 className="text-xl font-semibold mb-2">State History:</h3>
+        <ul className="max-h-[200px] overflow-y-auto p-4 bg-gray-100 dark:bg-gray-800 rounded list-none">
           {history.map((entry, i) => (
             <li 
               key={`history-${i}`}
-              style={{
-                padding: '8px 0',
-                borderBottom: i < history.length - 1 ? '1px solid #ddd' : 'none'
-              }}
+              className={`py-2 ${
+                i < history.length - 1 ? 'border-b border-gray-300 dark:border-gray-700' : ''
+              }`}
             >
               {entry}
             </li>
           ))}
         </ul>
       </div>
-      
-      <style>{`
-        .action-btn {
-          padding: 10px 16px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: bold;
-          transition: all 0.3s;
-        }
-        
-        .action-btn:hover {
-          opacity: 0.9;
-          transform: translateY(-2px);
-        }
-        
-        .primary { background-color: #2196F3; color: white; }
-        .success { background-color: #4CAF50; color: white; }
-        .danger { background-color: #F44336; color: white; }
-        .warning { background-color: #FF9800; color: white; }
-      `}</style>
     </div>
   );
 };

@@ -1,26 +1,25 @@
 import { useState } from 'react'
 import FSMDemo from './components/FSMDemo'
 import DocumentWorkflow from './components/DocumentWorkflow'
-import './App.css'
 
 function App() {
   const [activeTab, setActiveTab] = useState<'traffic-light' | 'document-workflow'>('traffic-light')
 
   return (
-    <>
-      <h1>Tuple State Machine Demo</h1>
+    <div className="max-w-5xl mx-auto p-8 text-center">
+      <h1 className="mb-6">Tuple State Machine Demo</h1>
       
-      <div className="tabs">
+      <div className="flex gap-4 mb-6">
         <button 
           type="button"
-          className={activeTab === 'traffic-light' ? 'active' : ''} 
+          className={`bg-transparent border-b-2 ${activeTab === 'traffic-light' ? 'border-[#646cff] text-[#646cff]' : 'border-transparent'} px-5 py-2.5 text-base transition-all duration-300 hover:text-[#535bf2]`} 
           onClick={() => setActiveTab('traffic-light')}
         >
           Traffic Light Example
         </button>
         <button 
           type="button"
-          className={activeTab === 'document-workflow' ? 'active' : ''} 
+          className={`bg-transparent border-b-2 ${activeTab === 'document-workflow' ? 'border-[#646cff] text-[#646cff]' : 'border-transparent'} px-5 py-2.5 text-base transition-all duration-300 hover:text-[#535bf2]`} 
           onClick={() => setActiveTab('document-workflow')}
         >
           Document Workflow
@@ -34,34 +33,7 @@ function App() {
       <p className="read-the-docs">
         A demonstration of tuple-state-machine library
       </p>
-      
-      <style>{`
-        .tabs {
-          display: flex;
-          gap: 10px;
-          margin-bottom: 20px;
-        }
-        
-        .tabs button {
-          padding: 10px 20px;
-          border: none;
-          border-bottom: 2px solid transparent;
-          background: transparent;
-          cursor: pointer;
-          font-size: 16px;
-          transition: all 0.3s;
-        }
-        
-        .tabs button.active {
-          border-bottom: 2px solid #646cff;
-          color: #646cff;
-        }
-        
-        .tabs button:hover {
-          color: #535bf2;
-        }
-      `}</style>
-    </>
+    </div>
   )
 }
 
